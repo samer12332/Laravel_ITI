@@ -18,6 +18,11 @@
                         <p class="text-3xl font-bold">Description :-</p>
                         <p class="text-2xl text-slate-700">{{ $post->description }}</p>
                     </div>
+
+                    <p class="text-2xl leading-tight">
+                        <span class="font-bold">Created At :- </span>
+                        <span>{{ $post->created_at?->format('l jS \o\f F Y h:i:s A') }}</span>
+                    </p>
                 </div>
             </section>
 
@@ -39,7 +44,7 @@
 
                     <p class="text-4xl leading-tight">
                         <span class="font-bold">Created At :- </span>
-                        <span>{{ \Illuminate\Support\Carbon::parse($post->user->created_at)->format('l jS \o\f F Y h:i:s A') }}</span>
+                        <span>{{ $post->user?->created_at?->format('l jS \o\f F Y h:i:s A') ?? 'Unknown' }}</span>
                     </p>
                 </div>
             </section>

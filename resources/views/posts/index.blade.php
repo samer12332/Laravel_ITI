@@ -27,7 +27,7 @@
                                 <td class="px-6 py-5">{{ ucfirst($post->title) }}</td>
                                 <td class="px-6 py-5">{{ $post->user->name ?? 'Unknown' }}</td>
                                 <td class="px-6 py-5">
-                                    {{ \Illuminate\Support\Carbon::parse($post->created_at)->toDateString() }}</td>
+                                    {{ $post->created_at?->toDateString() }}</td>
                                 <td class="px-6 py-5">
                                     <div class="flex flex-wrap gap-2">
                                         <x-button type="primary" :href="route('posts.show', $post->id)">
