@@ -57,13 +57,7 @@
             </div>
 
             <div class="border-t border-slate-200 bg-slate-50 px-6 py-4">
-                <nav class="flex items-center gap-2 text-sm">
-                    <span class="rounded-md border border-slate-300 bg-white px-4 py-2 text-sky-600">Previous</span>
-                    <span class="rounded-md border border-slate-300 bg-white px-4 py-2 text-sky-600">1</span>
-                    <span class="rounded-md border border-slate-300 bg-white px-4 py-2 text-sky-600">2</span>
-                    <span class="rounded-md border border-slate-300 bg-white px-4 py-2 text-sky-600">3</span>
-                    <span class="rounded-md border border-slate-300 bg-white px-4 py-2 text-sky-600">Next</span>
-                </nav>
+                {{ $posts->links() }}
             </div>
         </div>
     </div>

@@ -31,7 +31,7 @@ class PostController extends Controller
         $posts = Post::query()
             ->with('user')
             ->latest()
-            ->get();
+            ->paginate(5);
 
         return view('posts.index', compact('posts'));
     }
@@ -40,11 +40,20 @@ class PostController extends Controller
     public function show(Request $request, int $id): View
     {
         $post = Post::query()
-            ->with('user')
+            ->with([
+                'user',
+                'comments' => fn ($query) => $query->latest(),
+            ])
             ->find($id);
         abort_if(!$post, 404);
 
-        return view('posts.show', compact('post'));
+        $editingComment = null;
+
+        if ($request->filled('editing_comment')) {
+            $editingComment = $post->comments->firstWhere('id', (int) $request->integer('editing_comment'));
+        }
+
+        return view('posts.show', compact('post', 'editingComment'));
     }
 
     public function create(): View
