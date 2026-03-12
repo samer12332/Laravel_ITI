@@ -23,20 +23,20 @@
                     <tbody class="divide-y divide-slate-200">
                         @foreach ($posts as $post)
                             <tr class="bg-white">
-                                <td class="px-6 py-5">{{ $post['id'] }}</td>
-                                <td class="px-6 py-5">{{ ucfirst($post['title']) }}</td>
-                                <td class="px-6 py-5">{{ $post['creator']['name'] }}</td>
+                                <td class="px-6 py-5">{{ $post->id }}</td>
+                                <td class="px-6 py-5">{{ ucfirst($post->title) }}</td>
+                                <td class="px-6 py-5">{{ $post->user->name ?? 'Unknown' }}</td>
                                 <td class="px-6 py-5">
-                                    {{ \Illuminate\Support\Carbon::parse($post['created_at'])->toDateString() }}</td>
+                                    {{ \Illuminate\Support\Carbon::parse($post->created_at)->toDateString() }}</td>
                                 <td class="px-6 py-5">
                                     <div class="flex flex-wrap gap-2">
-                                        <x-button type="primary" :href="route('posts.show', $post['id'])">
+                                        <x-button type="primary" :href="route('posts.show', $post->id)">
                                             View
                                         </x-button>
-                                        <x-button type="secondary" :href="route('posts.edit', $post['id'])">
+                                        <x-button type="secondary" :href="route('posts.edit', $post->id)">
                                             Edit
                                         </x-button>
-                                        <form action="{{ route('posts.destroy', $post['id']) }}" method="POST" class="inline">
+                                        <form action="{{ route('posts.destroy', $post->id) }}" method="POST" class="inline">
                                             @csrf
                                             @method('DELETE')
                                             <x-button type="danger" button-type="submit">

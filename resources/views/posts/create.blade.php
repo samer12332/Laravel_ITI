@@ -9,7 +9,7 @@
                     'creators' => $creators,
                     'titleValue' => '',
                     'descriptionValue' => '',
-                    'creatorValue' => 'Ahmed',
+                    'creatorValue' => $creators->first()?->id,
                 ])
 
                 <button

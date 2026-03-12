@@ -33,7 +33,7 @@
         class="block w-full rounded-md border border-slate-300 px-4 py-3 text-base text-slate-800 outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100"
     >
         @foreach ($creators as $creator)
-            <option value="{{ $creator }}" @selected(old('creator', $creatorValue ?? 'Ahmed') === $creator)>{{ $creator }}</option>
+            <option value="{{ $creator->id }}" @selected((string) old('creator', $creatorValue ?? '') === (string) $creator->id)>{{ $creator->name }}</option>
         @endforeach
     </select>
     @error('creator')

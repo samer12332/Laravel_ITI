@@ -11,12 +11,12 @@
                 <div class="space-y-4 px-5 py-6 text-slate-800">
                     <p class="text-4xl font-bold leading-tight">
                         <span>Title :- </span>
-                        <span class="font-normal">{{ ucfirst($innerPost['title']) }}</span>
+                        <span class="font-normal">{{ ucfirst($post->title) }}</span>
                     </p>
 
                     <div class="space-y-1">
                         <p class="text-3xl font-bold">Description :-</p>
-                        <p class="text-2xl text-slate-700">{{ $innerPost['description'] }}</p>
+                        <p class="text-2xl text-slate-700">{{ $post->description }}</p>
                     </div>
                 </div>
             </section>
@@ -29,17 +29,17 @@
                 <div class="space-y-4 px-5 py-6 text-slate-800">
                     <p class="text-4xl leading-tight">
                         <span class="font-bold">Name :- </span>
-                        <span>{{ $innerPost['creator']['name'] }}</span>
+                        <span>{{ $post->user->name ?? 'Unknown' }}</span>
                     </p>
 
                     <p class="text-4xl leading-tight">
                         <span class="font-bold">Email :- </span>
-                        <span>{{ $innerPost['creator']['email'] }}</span>
+                        <span>{{ $post->user->email ?? 'Unknown' }}</span>
                     </p>
 
                     <p class="text-4xl leading-tight">
                         <span class="font-bold">Created At :- </span>
-                        <span>{{ \Illuminate\Support\Carbon::parse($innerPost['creator']['created_at'])->format('l jS \o\f F Y h:i:s A') }}</span>
+                        <span>{{ \Illuminate\Support\Carbon::parse($post->user->created_at)->format('l jS \o\f F Y h:i:s A') }}</span>
                     </p>
                 </div>
             </section>
