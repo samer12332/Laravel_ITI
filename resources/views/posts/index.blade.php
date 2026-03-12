@@ -36,7 +36,12 @@
                                         <x-button type="secondary" :href="route('posts.edit', $post->id)">
                                             Edit
                                         </x-button>
-                                        <form action="{{ route('posts.destroy', $post->id) }}" method="POST" class="inline">
+                                        <form
+                                            action="{{ route('posts.destroy', $post->id) }}"
+                                            method="POST"
+                                            class="inline"
+                                            onsubmit="return confirm('Are you sure you want to delete this post?');"
+                                        >
                                             @csrf
                                             @method('DELETE')
                                             <x-button type="danger" button-type="submit">
