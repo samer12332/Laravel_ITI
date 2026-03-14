@@ -40,3 +40,24 @@
         <p class="text-sm text-rose-600">{{ $message }}</p>
     @enderror
 </div>
+
+<div class="space-y-3">
+    <label for="image" class="block text-lg font-medium text-slate-700">Post Image</label>
+    @if (!empty($imageUrl))
+        <img
+            src="{{ $imageUrl }}"
+            alt="{{ $titleValue ?: 'Post image' }}"
+            class="h-48 w-full rounded-md object-cover"
+        >
+    @endif
+    <input
+        id="image"
+        name="image"
+        type="file"
+        accept=".jpg,.png"
+        class="block w-full rounded-md border border-slate-300 px-4 py-3 text-base text-slate-800 file:mr-4 file:rounded-md file:border-0 file:bg-slate-100 file:px-4 file:py-2 file:text-sm file:font-medium file:text-slate-700"
+    >
+    @error('image')
+        <p class="text-sm text-rose-600">{{ $message }}</p>
+    @enderror
+</div>

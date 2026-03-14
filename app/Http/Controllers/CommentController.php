@@ -2,27 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CommentRequest;
 use App\Models\Comment;
 use App\Models\Post;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
-    private function validateComment(Request $request): array
-    {
-        return $request->validate([
-            'author_name' => ['required', 'string', 'max:255'],
-            'body' => ['required', 'string'],
-        ]);
-    }
-
-    public function store(Request $request, int $postId): RedirectResponse
+    public function store(CommentRequest $request, int $postId): RedirectResponse
     {
         $post = Post::query()->find($postId);
         abort_if(!$post, 404);
 
-        $validated = $this->validateComment($request);
+        $validated = $request->validated();
 
         $post->comments()->create($validated);
 
@@ -31,7 +23,7 @@ class CommentController extends Controller
             ->with('success', 'Comment added successfully.');
     }
 
-    public function update(Request $request, int $postId, int $commentId): RedirectResponse
+    public function update(CommentRequest $request, int $postId, int $commentId): RedirectResponse
     {
         $post = Post::query()->find($postId);
         abort_if(!$post, 404);
@@ -42,7 +34,7 @@ class CommentController extends Controller
             ->find($commentId);
         abort_if(!$comment, 404);
 
-        $validated = $this->validateComment($request);
+        $validated = $request->validated();
 
         $comment->update($validated);
 

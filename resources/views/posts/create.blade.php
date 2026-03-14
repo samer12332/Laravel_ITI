@@ -3,13 +3,14 @@
 @section('content')
     <div class="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
         <div class="rounded-md bg-white p-8 shadow-sm ring-1 ring-slate-200">
-            <form action="{{ route('posts.store') }}" method="POST" class="space-y-8">
+            <form action="{{ route('posts.store') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
                 @csrf
                 @include('layouts.post-form', [
                     'creators' => $creators,
                     'titleValue' => '',
                     'descriptionValue' => '',
                     'creatorValue' => $creators->first()?->id,
+                    'imageUrl' => null,
                 ])
 
                 <button

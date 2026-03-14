@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PostRequest;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class PostController extends Controller
 {
@@ -17,27 +19,59 @@ class PostController extends Controller
             ->get(['id', 'name']);
     }
 
-    private function validatePost(Request $request): array
+    private function postListItem(Post $post): array
     {
-        return $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'description' => ['required', 'string'],
-            'creator' => ['required', 'exists:users,id'],
-        ]);
+        return [
+            'id' => $post->id,
+            'title' => $post->title,
+            'slug' => $post->slug,
+            'image_url' => $post->image_url,
+            'created_at' => $post->created_at?->toDateString(),
+            'user' => [
+                'name' => $post->user->name ?? 'Unknown',
+            ],
+        ];
     }
 
-    public function index(Request $request): View
+    private function postDetails(Post $post): array
+    {
+        return [
+            'id' => $post->id,
+            'title' => $post->title,
+            'slug' => $post->slug,
+            'description' => $post->description,
+            'image_url' => $post->image_url,
+            'created_at' => $post->created_at?->format('l jS \o\f F Y h:i:s A'),
+            'user_id' => $post->user_id,
+            'user' => [
+                'name' => $post->user->name ?? 'Unknown',
+                'email' => $post->user->email ?? 'Unknown',
+                'created_at' => $post->user?->created_at?->format('l jS \o\f F Y h:i:s A') ?? 'Unknown',
+            ],
+            'comments' => $post->comments->map(fn ($comment) => [
+                'id' => $comment->id,
+                'author_name' => $comment->author_name,
+                'body' => $comment->body,
+                'created_at' => $comment->created_at?->toDateString(),
+            ])->values(),
+        ];
+    }
+
+    public function index(Request $request): Response
     {
         $posts = Post::query()
             ->with('user')
             ->latest()
-            ->paginate(5);
+            ->paginate(5)
+            ->through(fn (Post $post) => $this->postListItem($post));
 
-        return view('posts.index', compact('posts'));
+        return Inertia::render('Posts/Index', [
+            'posts' => $posts,
+        ]);
     }
 
 
-    public function show(Request $request, int $id): View
+    public function show(Request $request, int $id): Response
     {
         $post = Post::query()
             ->with([
@@ -53,23 +87,29 @@ class PostController extends Controller
             $editingComment = $post->comments->firstWhere('id', (int) $request->integer('editing_comment'));
         }
 
-        return view('posts.show', compact('post', 'editingComment'));
+        return Inertia::render('Posts/Show', [
+            'post' => $this->postDetails($post),
+            'editingCommentId' => $editingComment?->id,
+        ]);
     }
 
-    public function create(): View
+    public function create(): Response
     {
         $creators = $this->creators();
 
-        return view('posts.create', compact('creators'));
+        return Inertia::render('Posts/Create', [
+            'creators' => $creators,
+        ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(PostRequest $request): RedirectResponse
     {
-        $validated = $this->validatePost($request);
+        $validated = $request->validated();
 
         Post::query()->create([
             'title' => $validated['title'],
             'description' => $validated['description'],
+            'image' => $validated['image'],
             'user_id' => $validated['creator'],
         ]);
 
@@ -79,7 +119,7 @@ class PostController extends Controller
             ->with('success', 'Post created successfully.');
     }
 
-    public function edit(Request $request, int $id): View
+    public function edit(Request $request, int $id): Response
     {
         $post = Post::query()
             ->with('user')
@@ -88,20 +128,29 @@ class PostController extends Controller
 
         $creators = $this->creators();
 
-        return view('posts.edit', compact('post', 'creators'));
+        return Inertia::render('Posts/Edit', [
+            'post' => $this->postDetails($post),
+            'creators' => $creators,
+        ]);
     }
 
-    public function update(Request $request, int $id): RedirectResponse
+    public function update(PostRequest $request, int $id): RedirectResponse
     {
-        $validated = $this->validatePost($request);
+        $validated = $request->validated();
 
         $post = Post::find($id);
         abort_if(!$post, 404);
-        $post->update([
+        $attributes = [
             'title' => $validated['title'],
             'description' => $validated['description'],
             'user_id' => $validated['creator'],
-        ]);
+        ];
+
+        if (array_key_exists('image', $validated)) {
+            $attributes['image'] = $validated['image'];
+        }
+
+        $post->update($attributes);
 
         return redirect()
             ->route('posts.index')

@@ -15,6 +15,7 @@
                         <tr class="border-b border-slate-200">
                             <th class="px-6 py-4 font-semibold">#</th>
                             <th class="px-6 py-4 font-semibold">Title</th>
+                            <th class="px-6 py-4 font-semibold">Slug</th>
                             <th class="px-6 py-4 font-semibold">Posted By</th>
                             <th class="px-6 py-4 font-semibold">Created At</th>
                             <th class="px-6 py-4 font-semibold">Actions</th>
@@ -25,6 +26,7 @@
                             <tr class="bg-white">
                                 <td class="px-6 py-5">{{ $post->id }}</td>
                                 <td class="px-6 py-5">{{ ucfirst($post->title) }}</td>
+                                <td class="px-6 py-5">{{ $post->slug ?? '-' }}</td>
                                 <td class="px-6 py-5">{{ $post->user->name ?? 'Unknown' }}</td>
                                 <td class="px-6 py-5">
                                     {{ $post->created_at?->toDateString() }}</td>
